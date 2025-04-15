@@ -6,14 +6,25 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.metrics import MeanSquaredError
 import nest_asyncio
 import uvicorn
+import os
+import git
+
 
 # Cài đặt nest_asyncio để hỗ trợ chạy trên Google Colab
 nest_asyncio.apply()
 
-# Tải các mô hình đã huấn luyện
-model_lab = load_model('/content/drive/MyDrive/TunaAnn_Data/model_ann_lab.h5', custom_objects={'mse': MeanSquaredError()})
-model_rgb = load_model('/content/drive/MyDrive/TunaAnn_Data/model_ann_rgb.h5', custom_objects={'mse': MeanSquaredError()})
+# # Tải các mô hình đã huấn luyện
+# model_lab = load_model('/content/drive/MyDrive/TunaAnn_Data/model_ann_lab.h5', custom_objects={'mse': MeanSquaredError()})
+# model_rgb = load_model('/content/drive/MyDrive/TunaAnn_Data/model_ann_rgb.h5', custom_objects={'mse': MeanSquaredError()})
 
+# Clone mô hình từ GitHub vào thư mục local
+if not os.path.exists("models"):
+    os.makedirs("models")
+git.Repo.clone_from("https://github.com/Runchveenti/Grad-Project.git", "models")
+
+# Tải mô hình
+model_lab = load_model('models/model_ann_lab.h5', custom_objects={'mse': MeanSquaredError()})
+model_rgb = load_model('models/model_ann_rgb.h5', custom_objects={'mse': MeanSquaredError()})
 # Tạo FastAPI app
 app = FastAPI()
 
